@@ -35,7 +35,7 @@ variable "instance_type" {
 variable "ami_id" {
     type        = string
     description = "AMI ID for EC2 instances"
-    default     = "ami-019715e0d74f695be"
+    default     = "ami-05d2d839d4f73aafb"
 }
 
 variable "ipv4_cidr_block" {
@@ -62,6 +62,12 @@ variable "ipv6_cidr_block_enabled" {
     default     = false
 }
 
+variable "availability_zones" {
+    type        = list(string)
+    description = "Availability zones for subnets"
+    default     = []
+}
+
 variable "enable_dns_support" {
     type        = bool
     description = "Enable DNS support"
@@ -86,7 +92,7 @@ variable "tags" {
 variable "kubernetes_version" {
     type        = string
     description = "Kubernetes version for EKS cluster"
-    default     = "1.29"
+    default     = "1.30"
 }
 
 variable "node_instance_type" {

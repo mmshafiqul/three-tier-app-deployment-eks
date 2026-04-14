@@ -2,13 +2,14 @@
 # Copy this file to terraform.tfvars and update with your values
 
 # AWS Configuration
-region = "us-east-1"
+region = "ap-south-1"
 profile = "default"
 
 # VPC Configuration
 ipv4_cidr_block = "10.0.0.0/16"
 public_subnet_cidr_blocks = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
 private_subnet_cidr_blocks = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+availability_zones = ["ap-south-1a", "ap-south-1b", "ap-south-1c"]
 enable_dns_support = true
 enable_dns_hostnames = true
 ipv6_cidr_block_enabled = false
@@ -16,10 +17,10 @@ ipv6_cidr_block_enabled = false
 # EC2 Configuration
 key_name = "your-key-pair-name"
 instance_type = "t3.medium"
-ami_id = "ami-0c7217cdde317cfec" # Update with your region's AMI
+# ami_id = "ami-0c7217cdde317cfec" # Update with your region's AMI
 
 # EKS Configuration
-kubernetes_version = "1.29"
+kubernetes_version = "1.28"
 node_instance_type = "t3.medium"
 desired_size = 2
 max_size = 4

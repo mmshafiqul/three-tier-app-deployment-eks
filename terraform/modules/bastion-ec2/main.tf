@@ -43,13 +43,15 @@ resource "aws_instance" "bastion" {
     # User data to install kubectl and AWS CLI for EKS management
     user_data = <<-EOF
               #!/bin/bash
-              yum update -y
-              yum install -y curl
+              sudo apt update -y
+              sudo apt install -y curl
               
               # Install AWS CLI
               curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+              sudo apt install -y unzip
               unzip awscliv2.zip
               sudo ./aws/install
+
               
               # Install kubectl
               curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"

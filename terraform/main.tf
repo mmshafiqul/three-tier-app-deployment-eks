@@ -12,8 +12,9 @@ module "subnet" {
   vpc_id                     = module.vpc.vpc_id
   public_subnet_cidr_blocks  = var.public_subnet_cidr_blocks
   private_subnet_cidr_blocks = var.private_subnet_cidr_blocks
+  availability_zones         = var.availability_zones
   tags                       = var.tags
-  
+
   depends_on = [module.vpc]
 }
 
@@ -58,7 +59,7 @@ module "bastion" {
 module "eks" {
   source              = "./modules/eks"
   vpc_id              = module.vpc.vpc_id
-  private_subnet_ids  = module.subnet.private_subnet_ids
+  private_subnet_ids  = module.subnet.public_subnet_ids
   kubernetes_version  = var.kubernetes_version
   node_instance_type  = var.node_instance_type
   desired_size        = var.desired_size
