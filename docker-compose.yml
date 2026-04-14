@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  database:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    container_name: bmi-database
+    environment:
+      POSTGRES_USER: bmi_user
+      POSTGRES_PASSWORD: admin1234
+      POSTGRES_DB: bmi_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bmi_user -d bmi_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bmi-network
+    restart: unless-stopped
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bmi-backend
+    environment:
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: bmi_db
+      DB_USER: bmi_user
+      DB_PASSWORD: admin1234
+      DATABASE_URL: postgresql://bmi_user:admin1234@database:5432/bmi_db
+      PORT: 3000
+      NODE_ENV: production
+      CORS_ORIGIN: http://localhost:80
+    ports:
+      - "3000:3000"
+    depends_on:
+      database:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - bmi-network
+    restart: unless-stopped
+
+  # Frontend (React with nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bmi-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    networks:
+      - bmi-network
+    restart: unless-stopped
+
+# Named volumes for data persistence
+volumes:
+  postgres_data:
+    driver: local
+
+# Custom network for service communication
+networks:
+  bmi-network:
+    driver: bridge

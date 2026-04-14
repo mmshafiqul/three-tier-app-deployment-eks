@@ -1,0 +1,12 @@
+# Terraform Backend Configuration for S3
+# Copy this file to backend-config.tfbackend and update with your values
+
+bucket = "your-terraform-state-bucket-name"
+key    = "3-tier-app/terraform.tfstate"
+region = "ap-south-1"
+
+# Optional: Enable DynamoDB for state locking
+# dynamodb_table = "terraform-state-lock"
+
+# Optional: Encrypt state
+# encrypt = true
